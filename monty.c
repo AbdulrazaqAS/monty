@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-
 	line_num = 1;
 	while (getline(&str, &bytes, filePtr) != -1)
 	{
@@ -63,7 +62,6 @@ int main(int argc, char *argv[])
 		memset(ARGS[0], '\0', ARG_LEN);
 		memset(ARGS[1], '\0', ARG_LEN);
 	}
-	
 	free(str);
 	free(ARGS[0]);
 	free(ARGS[1]);
@@ -72,9 +70,15 @@ int main(int argc, char *argv[])
 	exit(EXIT_SUCCESS);
 }
 
+/**
+ * get_func - gets an opcode function
+ * @opcode: the opcode
+ *
+ * Return: a function to an opcode
+ */
 void (*get_func(char *opcode))(stack_t **stack, unsigned int line_num)
 {
-	int i, a;
+	int i;
 
 	instruction_t funcs[] = {
 		{"push", push},
@@ -84,19 +88,23 @@ void (*get_func(char *opcode))(stack_t **stack, unsigned int line_num)
 
 	for (i = 0; funcs[i].opcode; i++)
 	{
-		if ((a = strcmp(opcode, funcs[i].opcode)) == 0)
+		if (strcmp(opcode, funcs[i].opcode) == 0)
 			return (funcs[i].f);
 	}
 
 	return (NULL);
 }
 
+/**
+ * free_stack - frees the stack
+ * @stack: the stack
+ */
 void free_stack(stack_t *stack)
 {
 	stack_t *tmp;
 
 	tmp = stack;
-	while(tmp)
+	while (tmp)
 	{
 		free(tmp);
 		tmp = tmp->next;
