@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Here at 1\n");
 	while (getline(&str, &bytes, filePtr) != -1)
 	{
 		line_num = 1;
@@ -52,8 +51,6 @@ int main(int argc, char *argv[])
 				break;
 
 			strcpy(ARGS[i], token);
-			if (i == 0)
-				printf("ARG 1 is %s\n", ARGS[0]);
 		}
 		func = get_func(ARGS[0]);
 		if (func == NULL)
@@ -86,10 +83,7 @@ void (*get_func(char *opcode))(stack_t **stack, unsigned int line_num)
 	for (i = 0; funcs[i].opcode; i++)
 	{
 		if ((a = strcmp(opcode, funcs[i].opcode)) == 0)
-		{
-			printf("cmp is %d\n", a);
 			return (funcs[i].f);
-		}
 	}
 
 	return (NULL);

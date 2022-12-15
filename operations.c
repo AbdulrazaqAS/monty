@@ -28,12 +28,13 @@ void push(stack_t **stack, unsigned int line_number)
 		exit(EXIT_FAILURE);
 	}
 
+	new->n = i;
 	stk = *stack;
 	if (stk == NULL)
 	{
 		new->next = NULL;
 		new->prev = NULL;
-		*stack = stk;
+		*stack = new;
 	}
 	else
 	{
