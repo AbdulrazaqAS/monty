@@ -1,18 +1,24 @@
-#ifndef MONTY
-#define MONTY
+#ifndef MONTY_H_
+#define MONTY_H_
 
-#define ARG_LEN 20
+
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <ctype.h>
 
 /**
- * struct stack_s - doubly linked list representation
- * of a stack (or queue)
+ * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
  * @prev: points to the previous element of the stack (or queue)
  * @next: points to the next element of the stack (or queue)
  *
  * Description: doubly linked list node structure
  * for stack, queues, LIFO, FIFO
- *
  */
 typedef struct stack_s
 {
@@ -22,7 +28,7 @@ typedef struct stack_s
 } stack_t;
 
 /**
- * struct insstruction_s - opcode and its function
+ * struct instruction_s - opcode and its function
  * @opcode: the opcode
  * @f: function to handle the opcode
  *
@@ -35,11 +41,39 @@ typedef struct instruction_s
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
-void push(stack_t **stack, unsigned int line_number);
-void pall(stack_t **stack, unsigned int line_number);
+/* Extern Global Variable: data */
+typedef struct data_s
+{
+	char *operand;
+	FILE *file;
+	char *line;
+} data_t;
 
-void free_stack(stack_t *);
+extern data_t data;
 
-extern char **ARGS;
+/* Helper Functions */
+char* _strdup(const char* s);
+int is_number(const char *str);
+void free_stack(stack_t *top);
+unsigned int stack_length(stack_t *top);
 
-#endif /* MONTY */
+/* Program Execution Assistance */
+void handle_program(char *file_name);
+
+/* Function Prototypes */
+void (*get_operations(const char *command))(stack_t **, unsigned int);
+void push(stack_t **top, unsigned int line_number);
+void pop(stack_t **top, unsigned int line_number);
+void swap(stack_t **top, unsigned int line_number);
+void print_all(stack_t **top, unsigned int line_number);
+void print_top(stack_t **top, unsigned int line_number);
+void print_char(stack_t **top, unsigned int line_number);
+void print_string(stack_t **top, unsigned int line_number);
+void add(stack_t **top, unsigned int line_number);
+void subtract(stack_t **top, unsigned int line_number);
+void divide(stack_t **top, unsigned int line_number);
+void multiply(stack_t **top, unsigned int line_number);
+void modulus(stack_t **top, unsigned int line_number);
+void no_operation(stack_t **top, unsigned int line_number);
+
+#endif /* MONTY_H_ */
