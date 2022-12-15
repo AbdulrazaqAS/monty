@@ -1,8 +1,11 @@
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "monty.h"
 
-stack_t *stack;
+void (*get_func(char *opcode))(stack_t **stack, unsigned int line_num);
+
+char **ARGS = NULL;
 
 /**
  * main - Entry point
@@ -13,11 +16,13 @@ stack_t *stack;
  */
 int main(int argc, char *argv[])
 {
+	stack_t *stack = NULL;
+
 	FILE *filePtr;
-	ssize_t chars;
 	size_t bytes = 0;
-	char *str = NULL, *token,*num, *tmp_str, *opcode;
+	char *str = NULL, *token;
 	int i, line_num;
+	void (*func)(stack_t **stack, unsigned int line_num);
 
 	if (argc != 2)
 	{
@@ -25,12 +30,9 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	stack = malloc(sizeof(*stack));
-	if (stack == NULL)
-	{
-		fprintf(stderr, "Error: malloc failed\n");
-		exit(EXIT_FAILURE);
-	}
+	ARGS = malloc(sizeof(char *) * 2);
+	ARGS[0] = malloc(sizeof(char) * 20);
+	ARGS[1] = malloc(sizeof(char) * 20);
 
 	filePtr = fopen(argv[1], "r");
 	if (filePtr == NULL)
@@ -38,37 +40,69 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	
-	while ((chars = getline(&str, &bytes, filePtr)) != -1)
+
+	printf("Here at 1\n");
+	while (getline(&str, &bytes, filePtr) != -1)
 	{
 		line_num = 1;
-		for (i = 0, tmp_str = str; i < 2; tmp_str = NULL, i++)
+		for (i = 0; ; str = NULL, i++)
 		{
-			token = strtok(str, " \t$");
+			token = strtok(str, " \t\n$");
 			if (token == NULL)
-			{
-				fprintf(stderr, "L%d: unknown instruction <opcode>\n", line_num);
-				exit(EXIT_FAILURE);
-			}
+				break;
 
+			strcpy(ARGS[i], token);
 			if (i == 0)
-				opcode = token;
-			else if (i == 1)
-				num = token;
+				printf("ARG 1 is %s\n", ARGS[0]);
 		}
-		run_opcode(opcode, num, line_num);
+		func = get_func(ARGS[0]);
+		if (func == NULL)
+		{
+			fprintf(stderr, "L%d: unknown instruction <opcode>\n", line_num);
+			exit(EXIT_FAILURE);
+		}
+		func(&stack, line_num);
+		line_num++;
 	}
-
+	
 	free(str);
+	free(ARGS[0]);
+	free(ARGS[1]);
+	free_stack(stack);
 	fclose(filePtr);
 	exit(EXIT_SUCCESS);
 }
 
-void run_opcode(char *opcode, char *num, int line)
+void (*get_func(char *opcode))(stack_t **stack, unsigned int line_num)
 {
-	switch (opcode)
+	int i, a;
+
+	instruction_t funcs[] = {
+		{"push", push},
+		{"pall", pall},
+		{NULL, NULL}
+	};
+
+	for (i = 0; funcs[i].opcode; i++)
 	{
-		case "push":
-			//To continue
+		if ((a = strcmp(opcode, funcs[i].opcode)) == 0)
+		{
+			printf("cmp is %d\n", a);
+			return (funcs[i].f);
+		}
+	}
+
+	return (NULL);
+}
+
+void free_stack(stack_t *stack)
+{
+	stack_t *tmp;
+
+	tmp = stack;
+	while(tmp)
+	{
+		tmp = stack->next;
+		free(stack);
 	}
 }

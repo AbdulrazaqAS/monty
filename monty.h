@@ -1,7 +1,6 @@
 #ifndef MONTY
 #define MONTY
 
-extern stack_t *stack;
 
 /**
  * struct stack_s - doubly linked list representation
@@ -34,5 +33,12 @@ typedef struct instruction_s
 	char *opcode;
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
+
+void push(stack_t **stack, unsigned int line_number);
+void pall(stack_t **stack, unsigned int line_number);
+
+void free_stack(stack_t *);
+
+extern char **ARGS;
 
 #endif /* MONTY */
