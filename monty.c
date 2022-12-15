@@ -60,6 +60,8 @@ int main(int argc, char *argv[])
 		}
 		func(&stack, line_num);
 		line_num++;
+		memset(ARGS[0], '\0', ARG_LEN);
+		memset(ARGS[1], '\0', ARG_LEN);
 	}
 	
 	free(str);

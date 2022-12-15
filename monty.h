@@ -1,6 +1,7 @@
 #ifndef MONTY
 #define MONTY
 
+#define ARG_LEN 20
 
 /**
  * struct stack_s - doubly linked list representation
