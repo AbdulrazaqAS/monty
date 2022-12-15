@@ -96,7 +96,7 @@ void free_stack(stack_t *stack)
 	tmp = stack;
 	while(tmp)
 	{
-		tmp = stack->next;
-		free(stack);
+		free(tmp);
+		tmp = tmp->next;
 	}
 }
