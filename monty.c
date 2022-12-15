@@ -41,9 +41,9 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	line_num = 1;
 	while (getline(&str, &bytes, filePtr) != -1)
 	{
-		line_num = 1;
 		for (i = 0; ; str = NULL, i++)
 		{
 			token = strtok(str, " \t\n$");
