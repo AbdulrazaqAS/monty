@@ -45,11 +45,14 @@ int main(int argc, char *argv[])
 	{
 		for (i = 0; ; str = NULL, i++)
 		{
-			token = strtok(str, " \t\n$");
-			if (token == NULL)
-				break;
+			if (i >= 2)
+			{	
+				token = strtok(str, " \t\n$");
+				if (token == NULL)
+					break;
 
-			strcpy(ARGS[i], token);
+				strcpy(ARGS[i], token);
+			}
 		}
 		func = get_func(ARGS[0]);
 		if (func == NULL)
